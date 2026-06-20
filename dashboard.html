@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mini ERP | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#542c55",
+              "primary-light": "#7b4f7a",
+              "primary-container": "#ffd6fa",
+              "on-primary-container": "#300c33",
+              "surface": "#fff7fa",
+              "surface-container": "#f5ebf0",
+              "surface-container-high": "#efe6ea",
+              "on-surface": "#1e1a1d",
+              "on-surface-variant": "#4d444c",
+              "outline": "#7f747c",
+              "outline-variant": "#d0c3cc",
+              // Status accent colors (legible on light cards)
+              "st-draft": "#6b5e66",
+              "st-confirmed": "#1d4ed8",
+              "st-progress": "#9333ea",
+              "st-partial": "#b45309",
+              "st-done": "#15803d",
+              "st-late": "#b91c1c",
+            },
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+          },
+        },
+      };
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal; font-style: normal; font-size: 24px; line-height: 1;
+    letter-spacing: normal; text-transform: none; display: inline-block;
+    white-space: nowrap; word-wrap: normal; direction: ltr;
+    -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dark, atmospheric backdrop matching the login screen */
+  .app-bg { background-color: #190b13; }
+  .app-bg-glow {
+    background:
+      radial-gradient(60vw 60vw at 12% -10%, rgba(235,182,231,0.22), transparent 60%),
+      radial-gradient(55vw 55vw at 100% 30%, rgba(123,79,122,0.20), transparent 60%),
+      radial-gradient(70vw 70vw at 30% 120%, rgba(109,67,109,0.22), transparent 60%);
+  }
+
+  /* Brand mark */
+  .brand-logo {
+    background: linear-gradient(135deg, #ebb6e7 0%, #c98fc6 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.01em;
+  }
+
+  /* Solid, high-contrast cards (the fix for the unreadable dark-on-dark version) */
+  .panel {
+    background: #ffffff;
+    border: 1px solid rgba(208,195,204,0.6);
+    box-shadow: 0 20px 45px -20px rgba(16,5,18,0.55);
+  }
+
+  /* Top bar / drawer glass */
+  .glass-bar {
+    background: rgba(25,11,19,0.55);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Status pill */
+  .pill {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 92px; padding: 10px 14px; border-radius: 14px;
+    border: 1px solid var(--pill-border, #e4d9e0);
+    background: var(--pill-bg, #faf5f8);
+    transition: transform .18s ease, box-shadow .18s ease;
+    cursor: pointer;
+  }
+  .pill:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(16,5,18,0.35); }
+  .pill .count { font-size: 26px; font-weight: 800; line-height: 1; }
+  .pill .label { margin-top: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+
+  /* Drawer */
+  #drawer { transition: transform .3s ease; }
+  #drawer.closed { transform: translateX(-110%); }
+  #scrim { transition: opacity .3s ease; }
+  #scrim.hidden-scrim { opacity: 0; pointer-events: none; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+    border-radius: 12px; color: #f2e6ee; font-weight: 600; font-size: 15px;
+    transition: background .2s ease;
+  }
+  .nav-item:hover { background: rgba(235,182,231,0.14); }
+  .nav-item.active { background: rgba(235,182,231,0.22); color: #ffffff; }
+  .nav-item .material-symbols-outlined { font-size: 22px; }
+
+  .row-label {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 52px; height: 32px; border-radius: 999px; font-weight: 700; font-size: 13px;
+    background: #f0e6ec; color: #542c55; border: 1px solid #e0d2db;
+  }
+</style>
+</head>
+<body class="app-bg min-h-screen text-on-surface">
+<div class="fixed inset-0 -z-10 app-bg"></div>
+<div class="fixed inset-0 -z-10 app-bg-glow"></div>
+
+<!-- ===== Top App Bar ===== -->
+<header class="glass-bar sticky top-0 z-40">
+  <div class="max-w-[1280px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleDrawer()" class="grid place-items-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors" aria-label="Open menu">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <div class="brand-logo text-xl md:text-2xl font-extrabold">Mini ERP</div>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <button class="grid place-items-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors relative" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-st-late"></span>
+      </button>
+      <button class="grid place-items-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors" aria-label="Settings">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+      <img class="w-10 h-10 rounded-full object-cover ring-2 ring-white/30" src="https://i.pravatar.cc/80?img=12" alt="User"/>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Drawer + Scrim ===== -->
+<div id="scrim" class="hidden-scrim fixed inset-0 z-40 bg-black/50" onclick="toggleDrawer()"></div>
+<aside id="drawer" class="closed fixed top-0 left-0 z-50 h-full w-[280px] bg-[#241019]/95 backdrop-blur-xl border-r border-white/10 p-4">
+  <div class="flex items-center justify-between px-2 py-3 mb-2">
+    <span class="text-white font-bold text-lg">Master Menu</span>
+    <button onclick="toggleDrawer()" class="grid place-items-center w-9 h-9 rounded-lg hover:bg-white/10 text-white" aria-label="Close menu">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <nav class="space-y-1">
+    <a href="#" class="nav-item active"><span class="material-symbols-outlined">shopping_cart</span>Sale Orders</a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">receipt_long</span>Purchase Orders</a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">precision_manufacturing</span>Manufacturing Orders</a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">list_alt</span>Bills of Materials</a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">inventory_2</span>Products</a>
+    <a href="#" class="nav-item"><span class="material-symbols-outlined">history</span>Audit Logs</a>
+  </nav>
+</aside>
+
+<!-- ===== Main ===== -->
+<main class="max-w-[1280px] mx-auto px-4 md:px-8 py-8">
+  <div class="mb-8">
+    <h1 class="text-2xl md:text-3xl font-extrabold text-white">Dashboard</h1>
+    <p class="text-white/70 mt-1">Live overview across your operations pipeline.</p>
+  </div>
+
+  <div class="space-y-6" id="cards"></div>
+</main>
+
+<script>
+  function toggleDrawer() {
+    document.getElementById('drawer').classList.toggle('closed');
+    document.getElementById('scrim').classList.toggle('hidden-scrim');
+  }
+
+  // Pill color presets keyed by status type
+  const STATUS = {
+    draft:    { color: '#6b5e66', bg: '#f4eef2', border: '#e3d7df' },
+    confirmed:{ color: '#1d4ed8', bg: '#eef3ff', border: '#cfdcff' },
+    progress: { color: '#9333ea', bg: '#f7eefe', border: '#e6d2fb' },
+    partial:  { color: '#b45309', bg: '#fef3e7', border: '#f6dcb8' },
+    toclose:  { color: '#0f766e', bg: '#e9faf7', border: '#bfeae3' },
+    done:     { color: '#15803d', bg: '#eafaf0', border: '#c4ecd2' },
+    late:     { color: '#b91c1c', bg: '#fdecec', border: '#f6c9c9' },
+  };
+
+  // Dashboard data — mirrors the wireframe structure
+  const DATA = [
+    {
+      title: 'Sale Orders', icon: 'shopping_cart',
+      all: [
+        { type:'draft',    label:'Draft',              count:2 },
+        { type:'confirmed',label:'Confirmed',          count:7 },
+        { type:'partial',  label:'Partially Delivered',count:1 },
+        { type:'done',     label:'Delivered',          count:11 },
+        { type:'late',     label:'Late',               count:11 },
+      ],
+      my: [
+        { type:'confirmed',label:'Confirmed', count:7 },
+        { type:'draft',    label:'Draft',     count:1 },
+        { type:'done',     label:'Delivered', count:5 },
+      ],
+    },
+    {
+      title: 'Purchase Orders', icon: 'receipt_long',
+      all: [
+        { type:'draft',    label:'Draft',             count:2 },
+        { type:'confirmed',label:'Confirmed',         count:7 },
+        { type:'partial',  label:'Partially Received',count:1 },
+        { type:'done',     label:'Received',          count:11 },
+        { type:'late',     label:'Late',              count:11 },
+      ],
+      my: [
+        { type:'confirmed',label:'Confirmed', count:7 },
+        { type:'draft',    label:'Draft',     count:1 },
+        { type:'done',     label:'Received',  count:5 },
+      ],
+    },
+    {
+      title: 'Manufacturing Orders', icon: 'precision_manufacturing',
+      all: [
+        { type:'draft',    label:'Draft',      count:2 },
+        { type:'confirmed',label:'Confirmed',  count:7 },
+        { type:'progress', label:'In-Progress',count:1 },
+        { type:'toclose',  label:'To Close',   count:5 },
+        { type:'done',     label:'Done',       count:11 },
+      ],
+      my: [
+        { type:'done', label:'Done', count:5 },
+      ],
+    },
+  ];
+
+  function pill(p) {
+    const s = STATUS[p.type];
+    return `<button class="pill" style="--pill-bg:${s.bg};--pill-border:${s.border}">
+      <span class="count" style="color:${s.color}">${p.count}</span>
+      <span class="label" style="color:${s.color}">${p.label}</span>
+    </button>`;
+  }
+
+  function row(tag, pills) {
+    return `<div class="flex items-center gap-4">
+      <span class="row-label">${tag}</span>
+      <div class="flex flex-wrap gap-3">${pills.map(pill).join('')}</div>
+    </div>`;
+  }
+
+  function card(c) {
+    return `<section class="panel rounded-2xl p-5 md:p-6">
+      <div class="flex items-center gap-3 mb-5">
+        <span class="grid place-items-center w-10 h-10 rounded-xl text-white" style="background:linear-gradient(135deg,#7b4f7a,#542c55)">
+          <span class="material-symbols-outlined">${c.icon}</span>
+        </span>
+        <h2 class="text-lg md:text-xl font-extrabold text-on-surface">${c.title}</h2>
+      </div>
+      <div class="space-y-4">
+        ${row('All', c.all)}
+        <div class="border-t border-outline-variant/60"></div>
+        ${row('My', c.my)}
+      </div>
+    </section>`;
+  }
+
+  document.getElementById('cards').innerHTML = DATA.map(card).join('');
+</script>
+</body>
+</html>
