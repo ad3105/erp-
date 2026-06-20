@@ -150,16 +150,27 @@
             color: #1e1a1d;
         }
 
-        /* Cinematic premium mesh base (pure CSS = zero pixelation) */
+        /* Photographic background image, kept razor-sharp (no stretch = no pixelation) */
         .bg-smoke {
-            background-color: #150612;
-            background-image:
-                radial-gradient(58% 70% at 12% 8%,  rgba(123, 79, 122, 0.45) 0%, rgba(123,79,122,0) 60%),
-                radial-gradient(50% 64% at 88% 12%, rgba(235, 182, 231, 0.18) 0%, rgba(235,182,231,0) 62%),
-                radial-gradient(64% 80% at 86% 90%, rgba(84, 44, 85, 0.55) 0%, rgba(84,44,85,0) 60%),
-                radial-gradient(56% 72% at 8% 96%,  rgba(48, 12, 51, 0.62) 0%, rgba(48,12,51,0) 60%),
-                radial-gradient(40% 44% at 50% 46%, rgba(60, 28, 62, 0.30) 0%, rgba(60,28,62,0) 70%),
-                linear-gradient(135deg, #1d0a1f 0%, #2a0f2e 48%, #160712 100%);
+            /* Solid fill sampled from the image's dark corners for a seamless full-bleed look */
+            background-color: #190b13;
+        }
+        /* Blurred, scaled copy fills the whole window so there are never empty edges */
+        .bg-photo-fill {
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(48px) saturate(1.1);
+            transform: scale(1.12);
+            opacity: 0.85;
+        }
+        /* Sharp copy, shown at native aspect (contain) so it is never upscaled past its size */
+        .bg-photo {
+            background-image: url('background.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* Subtle vignette so glass + logo pop against the background */
@@ -316,15 +327,15 @@
             .glow, .light-streak, .glass-panel { animation: none !important; }
         }
 
-        /* Logo: luminous lavender gradient for contrast on the dark scene */
+        /* Logo: deep purple (Sign In) gradient with a soft halo, legible over the image */
         .brand-logo {
-            background: linear-gradient(135deg, #ffffff 0%, #ffd6fa 45%, #ebb6e7 100%);
+            background: linear-gradient(135deg, #7b4f7a 0%, #542c55 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.01em;
-            filter: drop-shadow(0 2px 14px rgba(235, 182, 231, 0.45));
+            filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.55)) drop-shadow(0 2px 12px rgba(255, 255, 255, 0.35));
         }
 
         .shimmer {
@@ -357,18 +368,9 @@
 <body class="bg-background text-on-surface min-h-screen flex flex-col">
 <!-- Background Layer -->
 <div class="fixed inset-0 -z-10 bg-smoke"></div>
-<!-- Premium animated scene: glows, glass panels, light streak, grain -->
-<div class="scene fixed inset-0 -z-10">
-<div class="glow glow-a"></div>
-<div class="glow glow-b"></div>
-<div class="glow glow-c"></div>
-<div class="light-streak"></div>
-<div class="glass-panel panel-1"></div>
-<div class="glass-panel panel-2"></div>
-<div class="glass-panel panel-3"></div>
-<div class="focal"></div>
-<div class="grain"></div>
-</div>
+<!-- Background image: blurred fill + sharp centered render -->
+<div class="fixed inset-0 -z-10 bg-photo-fill"></div>
+<div class="fixed inset-0 -z-10 bg-photo"></div>
 <!-- Contrast overlay -->
 <div class="fixed inset-0 -z-10 bg-overlay"></div>
 <!-- TopAppBar Shell -->
