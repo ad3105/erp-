@@ -150,27 +150,33 @@
             color: #1e1a1d;
         }
 
+        /* Crystal-clear, vector-smooth smoke background (pure CSS = zero pixelation) */
         .bg-smoke {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            /* Enhance clarity: boost saturation, contrast and sharpness of the smoke image */
-            filter: saturate(1.35) contrast(1.18) brightness(1.06);
-            transform: scale(1.04); /* hides edge softening from the filter */
-            image-rendering: -webkit-optimize-contrast;
+            background-color: #1a0a1c;
+            background-image:
+                radial-gradient(42% 50% at 50% 22%, rgba(248, 238, 242, 0.55) 0%, rgba(248,238,242,0) 70%),
+                radial-gradient(38% 46% at 33% 38%, rgba(235, 182, 231, 0.50) 0%, rgba(235,182,231,0) 72%),
+                radial-gradient(46% 56% at 66% 52%, rgba(176, 122, 170, 0.55) 0%, rgba(176,122,170,0) 72%),
+                radial-gradient(44% 52% at 24% 74%, rgba(123, 79, 122, 0.65) 0%, rgba(123,79,122,0) 72%),
+                radial-gradient(52% 62% at 82% 80%, rgba(84, 44, 85, 0.70) 0%, rgba(84,44,85,0) 74%),
+                radial-gradient(70% 80% at 50% 50%, rgba(48, 12, 51, 0.30) 0%, rgba(26, 10, 28, 0.85) 100%);
         }
 
-        /* Subtle dark vignette so glass + logo pop against the background */
+        /* Subtle vignette so glass + logo pop against the background */
         .bg-overlay {
             background:
-                radial-gradient(120% 120% at 50% 20%, rgba(0,0,0,0) 40%, rgba(20,8,22,0.45) 100%),
-                linear-gradient(180deg, rgba(20,8,22,0.15) 0%, rgba(20,8,22,0.0) 30%);
+                radial-gradient(120% 120% at 50% 18%, rgba(0,0,0,0) 45%, rgba(16,6,18,0.50) 100%);
         }
 
+        /* Logo coloured to match the Sign In button gradient */
         .brand-logo {
-            color: #ffffff;
-            text-shadow: 0 2px 12px rgba(48, 12, 51, 0.55), 0 0 1px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #7b4f7a 0%, #542c55 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
             letter-spacing: -0.01em;
+            filter: drop-shadow(0 1px 6px rgba(255, 214, 250, 0.35));
         }
 
         .shimmer {
@@ -202,15 +208,13 @@
 </head>
 <body class="bg-background text-on-surface min-h-screen flex flex-col">
 <!-- Background Layer -->
-<div class="fixed inset-0 -z-10 bg-smoke" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvYMlU8D-wzuyH_cjQA77EePjKq4Ms0OI_73PsV_yYqdBrCquBjxCSy1z6SH7D4Rdz7YlWPRICu-T9W04i0urB9x8Zt7Cb7Ok-do-UxuXtwnFdYBBnB2CGDBsSZWnoyH7_8lp4nZyx16jZ0N-zMvCdKt5vW2Ry1QtrqtNnhH_Jl6AOVsVIPiPU4JiGrNC0S23dYN9d52igoNj2o7lZPuCIBb863hHRVZtYVVbeMm0UrpqG6yD505EkL1_71XBEaPGFpHA4l56bYdc')">
-</div>
+<div class="fixed inset-0 -z-10 bg-smoke"></div>
 <!-- Contrast overlay -->
 <div class="fixed inset-0 -z-10 bg-overlay"></div>
 <!-- TopAppBar Shell -->
 <header class="docked full-width top-0 z-50">
-<div class="relative flex items-center justify-center w-full px-margin-desktop py-gutter max-w-container-max mx-auto">
-<div class="brand-logo font-headline-md text-headline-md font-semibold tracking-tight">mini erp</div>
-<nav class="hidden md:flex gap-8 items-center absolute right-margin-desktop top-1/2 -translate-y-1/2">
+<div class="relative flex items-center justify-end w-full px-margin-desktop py-gutter max-w-container-max mx-auto">
+<nav class="hidden md:flex gap-8 items-center">
 <div class="flex items-center gap-6">
 <button class="material-symbols-outlined text-white/80 hover:text-white transition-colors duration-300 scale-95 active:scale-90">help</button>
 <button class="material-symbols-outlined text-white/80 hover:text-white transition-colors duration-300 scale-95 active:scale-90">language</button>
@@ -219,7 +223,9 @@
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="flex-grow flex items-center justify-center px-margin-mobile md:px-0 py-20">
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-0 py-20">
+<!-- Brand logo, centered above the login card -->
+<div class="brand-logo font-headline-md text-headline-md font-bold tracking-tight text-center mb-6">mini erp</div>
 <div class="glass-card w-full max-w-[440px] rounded-[32px] overflow-hidden p-8 md:p-10 transition-all duration-500 hover:shadow-2xl">
 <!-- Tab Switcher -->
 <div class="tab-island flex mb-10">
@@ -264,11 +270,11 @@
 <!-- Footer Shell -->
 <footer class="docked full-width bottom-0 z-50">
 <div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-gutter max-w-container-max mx-auto gap-4">
-<div class="font-label-md text-label-md font-bold text-on-surface">© 2024 Mini ERP. All rights reserved.</div>
+<div class="font-label-md text-label-md font-bold text-white/90">© 2024 Mini ERP. All rights reserved.</div>
 <div class="flex gap-6">
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors duration-300 opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors duration-300 opacity-80 hover:opacity-100" href="#">Terms of Service</a>
-<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors duration-300 opacity-80 hover:opacity-100" href="#">Contact Support</a>
+<a class="font-label-sm text-label-sm text-white/70 hover:text-white transition-colors duration-300" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-white/70 hover:text-white transition-colors duration-300" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-white/70 hover:text-white transition-colors duration-300" href="#">Contact Support</a>
 </div>
 </div>
 </footer>
