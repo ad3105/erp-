@@ -154,6 +154,23 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            /* Enhance clarity: boost saturation, contrast and sharpness of the smoke image */
+            filter: saturate(1.35) contrast(1.18) brightness(1.06);
+            transform: scale(1.04); /* hides edge softening from the filter */
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        /* Subtle dark vignette so glass + logo pop against the background */
+        .bg-overlay {
+            background:
+                radial-gradient(120% 120% at 50% 20%, rgba(0,0,0,0) 40%, rgba(20,8,22,0.45) 100%),
+                linear-gradient(180deg, rgba(20,8,22,0.15) 0%, rgba(20,8,22,0.0) 30%);
+        }
+
+        .brand-logo {
+            color: #ffffff;
+            text-shadow: 0 2px 12px rgba(48, 12, 51, 0.55), 0 0 1px rgba(0,0,0,0.4);
+            letter-spacing: -0.01em;
         }
 
         .shimmer {
@@ -187,14 +204,16 @@
 <!-- Background Layer -->
 <div class="fixed inset-0 -z-10 bg-smoke" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvYMlU8D-wzuyH_cjQA77EePjKq4Ms0OI_73PsV_yYqdBrCquBjxCSy1z6SH7D4Rdz7YlWPRICu-T9W04i0urB9x8Zt7Cb7Ok-do-UxuXtwnFdYBBnB2CGDBsSZWnoyH7_8lp4nZyx16jZ0N-zMvCdKt5vW2Ry1QtrqtNnhH_Jl6AOVsVIPiPU4JiGrNC0S23dYN9d52igoNj2o7lZPuCIBb863hHRVZtYVVbeMm0UrpqG6yD505EkL1_71XBEaPGFpHA4l56bYdc')">
 </div>
+<!-- Contrast overlay -->
+<div class="fixed inset-0 -z-10 bg-overlay"></div>
 <!-- TopAppBar Shell -->
 <header class="docked full-width top-0 z-50">
-<div class="flex justify-between items-center w-full px-margin-desktop py-gutter max-w-container-max mx-auto">
-<div class="font-headline-md text-headline-md font-semibold text-primary dark:text-inverse-primary tracking-tight">mini erp</div>
-<nav class="hidden md:flex gap-8 items-center">
+<div class="relative flex items-center justify-center w-full px-margin-desktop py-gutter max-w-container-max mx-auto">
+<div class="brand-logo font-headline-md text-headline-md font-semibold tracking-tight">mini erp</div>
+<nav class="hidden md:flex gap-8 items-center absolute right-margin-desktop top-1/2 -translate-y-1/2">
 <div class="flex items-center gap-6">
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors duration-300 scale-95 active:scale-90">help</button>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors duration-300 scale-95 active:scale-90">language</button>
+<button class="material-symbols-outlined text-white/80 hover:text-white transition-colors duration-300 scale-95 active:scale-90">help</button>
+<button class="material-symbols-outlined text-white/80 hover:text-white transition-colors duration-300 scale-95 active:scale-90">language</button>
 </div>
 </nav>
 </div>
