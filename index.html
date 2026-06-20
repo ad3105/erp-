@@ -150,16 +150,16 @@
             color: #1e1a1d;
         }
 
-        /* Crystal-clear, vector-smooth smoke background (pure CSS = zero pixelation) */
+        /* Cinematic premium mesh base (pure CSS = zero pixelation) */
         .bg-smoke {
-            background-color: #1a0a1c;
+            background-color: #150612;
             background-image:
-                radial-gradient(42% 50% at 50% 22%, rgba(248, 238, 242, 0.55) 0%, rgba(248,238,242,0) 70%),
-                radial-gradient(38% 46% at 33% 38%, rgba(235, 182, 231, 0.50) 0%, rgba(235,182,231,0) 72%),
-                radial-gradient(46% 56% at 66% 52%, rgba(176, 122, 170, 0.55) 0%, rgba(176,122,170,0) 72%),
-                radial-gradient(44% 52% at 24% 74%, rgba(123, 79, 122, 0.65) 0%, rgba(123,79,122,0) 72%),
-                radial-gradient(52% 62% at 82% 80%, rgba(84, 44, 85, 0.70) 0%, rgba(84,44,85,0) 74%),
-                radial-gradient(70% 80% at 50% 50%, rgba(48, 12, 51, 0.30) 0%, rgba(26, 10, 28, 0.85) 100%);
+                radial-gradient(58% 70% at 12% 8%,  rgba(123, 79, 122, 0.45) 0%, rgba(123,79,122,0) 60%),
+                radial-gradient(50% 64% at 88% 12%, rgba(235, 182, 231, 0.18) 0%, rgba(235,182,231,0) 62%),
+                radial-gradient(64% 80% at 86% 90%, rgba(84, 44, 85, 0.55) 0%, rgba(84,44,85,0) 60%),
+                radial-gradient(56% 72% at 8% 96%,  rgba(48, 12, 51, 0.62) 0%, rgba(48,12,51,0) 60%),
+                radial-gradient(40% 44% at 50% 46%, rgba(60, 28, 62, 0.30) 0%, rgba(60,28,62,0) 70%),
+                linear-gradient(135deg, #1d0a1f 0%, #2a0f2e 48%, #160712 100%);
         }
 
         /* Subtle vignette so glass + logo pop against the background */
@@ -168,98 +168,137 @@
                 radial-gradient(120% 120% at 50% 18%, rgba(0,0,0,0) 45%, rgba(16,6,18,0.50) 100%);
         }
 
-        /* ---- Animated 3D spheres ---- */
-        .orbs {
+        /* ================= Premium animated background ================= */
+        .scene {
             overflow: hidden;
             pointer-events: none;
         }
 
-        .orb {
+        /* --- Volumetric light glows: large, soft, atmospheric --- */
+        .glow {
             position: absolute;
             border-radius: 50%;
-            /* Shaded radial gradient = 3D sphere look (highlight top-left, core bottom-right) */
-            background:
-                radial-gradient(circle at 32% 28%,
-                    rgba(255, 255, 255, 0.95) 0%,
-                    var(--orb-light, #ffd6fa) 18%,
-                    var(--orb-mid, #7b4f7a) 58%,
-                    var(--orb-dark, #300c33) 100%);
-            box-shadow:
-                inset -18px -22px 50px rgba(48, 12, 51, 0.55),
-                inset 12px 14px 40px rgba(255, 255, 255, 0.35),
-                0 30px 90px rgba(48, 12, 51, 0.45);
+            filter: blur(70px);
+            opacity: 0.7;
+            will-change: transform;
+            mix-blend-mode: screen;
+        }
+        .glow-a {
+            width: 46vw; height: 46vw; top: -14vw; left: -10vw;
+            background: radial-gradient(circle at 40% 40%, rgba(235,182,231,0.55), rgba(123,79,122,0.18) 55%, transparent 72%);
+            animation: drift-a 34s ease-in-out infinite;
+        }
+        .glow-b {
+            width: 40vw; height: 40vw; top: 30vh; right: -12vw;
+            background: radial-gradient(circle at 50% 50%, rgba(173,122,160,0.50), rgba(84,44,85,0.16) 55%, transparent 72%);
+            animation: drift-b 42s ease-in-out infinite;
+        }
+        .glow-c {
+            width: 52vw; height: 52vw; bottom: -22vw; left: 8vw;
+            background: radial-gradient(circle at 50% 50%, rgba(109,67,109,0.55), rgba(48,12,51,0.20) 55%, transparent 72%);
+            animation: drift-c 50s ease-in-out infinite;
+        }
+
+        /* --- Cinematic light streak across the scene --- */
+        .light-streak {
+            position: absolute;
+            top: -30%; left: 30%;
+            width: 60vw; height: 160vh;
+            background: linear-gradient(90deg, transparent, rgba(255,214,250,0.10) 45%, rgba(255,255,255,0.06) 50%, rgba(255,214,250,0.10) 55%, transparent);
+            transform: rotate(18deg);
+            filter: blur(40px);
+            mix-blend-mode: screen;
+            animation: sweep 28s ease-in-out infinite;
+        }
+
+        /* --- Frosted glass panels: refined geometric depth layers --- */
+        .glass-panel {
+            position: absolute;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid transparent;
+            border-image: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,255,255,0.05)) 1;
+            box-shadow: 0 30px 80px rgba(20,6,22,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
             will-change: transform;
         }
-
-        /* Hemispheres: a sphere clipped to its top half */
-        .hemi {
-            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        .panel-1 {
+            width: 26vw; height: 34vw; top: 10vh; left: 6vw;
+            transform: rotate(-18deg);
+            animation: tilt-1 30s ease-in-out infinite;
+        }
+        .panel-2 {
+            width: 20vw; height: 26vw; bottom: 6vh; right: 8vw;
+            transform: rotate(14deg);
+            animation: tilt-2 36s ease-in-out infinite;
+        }
+        .panel-3 {
+            width: 14vw; height: 14vw; top: 16vh; right: 22vw;
+            border-radius: 50%;
+            transform: rotate(0deg);
+            animation: tilt-3 26s ease-in-out infinite;
         }
 
-        .orb-1 {
-            width: 34vw; height: 34vw;
-            top: -6vw; left: -8vw;
-            --orb-light: #ffd6fa; --orb-mid: #7b4f7a; --orb-dark: #300c33;
-            animation: float1 26s ease-in-out infinite;
-        }
-        .orb-2 {
-            width: 24vw; height: 24vw;
-            top: 8vh; right: -6vw;
-            --orb-light: #f6daf5; --orb-mid: #6d436d; --orb-dark: #2a0c2c;
-            animation: float2 32s ease-in-out infinite;
-        }
-        .orb-3 {
-            width: 40vw; height: 40vw;
-            bottom: -16vw; left: 18vw;
-            --orb-light: #ebb6e7; --orb-mid: #542c55; --orb-dark: #1e0a20;
-            filter: blur(2px);
-            animation: float3 38s ease-in-out infinite;
-        }
-        .orb-4 {
-            width: 16vw; height: 16vw;
-            bottom: 12vh; right: 14vw;
-            --orb-light: #ffffff; --orb-mid: #a37aa0; --orb-dark: #4a274b;
-            animation: float4 22s ease-in-out infinite;
-        }
-        .orb-5 {
-            width: 12vw; height: 12vw;
-            top: 22vh; left: 26vw;
-            --orb-light: #ffd6fa; --orb-mid: #8a5a89; --orb-dark: #3a1a3c;
-            filter: blur(1px);
-            animation: float2 28s ease-in-out infinite reverse;
+        /* --- Fine grain for premium, band-free rendering --- */
+        .grain {
+            position: absolute; inset: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        @keyframes float1 {
-            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            50%      { transform: translate(4vw, 6vh) scale(1.08) rotate(8deg); }
+        /* --- Clean focal halo behind the login card for readability --- */
+        .focal {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 60vw; height: 60vw;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(245,235,240,0.10) 0%, rgba(245,235,240,0) 60%);
         }
-        @keyframes float2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(-5vw, 4vh) scale(1.12); }
+
+        @keyframes drift-a {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%     { transform: translate(5vw, 4vh) scale(1.12); }
         }
-        @keyframes float3 {
-            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            50%      { transform: translate(6vw, -5vh) scale(1.06) rotate(-6deg); }
+        @keyframes drift-b {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%     { transform: translate(-6vw, -3vh) scale(1.1); }
         }
-        @keyframes float4 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50%      { transform: translate(-4vw, -6vh) scale(1.15); }
+        @keyframes drift-c {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%     { transform: translate(4vw, -5vh) scale(1.08); }
+        }
+        @keyframes sweep {
+            0%,100% { transform: rotate(18deg) translateX(-6vw); opacity: 0.6; }
+            50%     { transform: rotate(18deg) translateX(8vw);  opacity: 1; }
+        }
+        @keyframes tilt-1 {
+            0%,100% { transform: rotate(-18deg) translate(0,0); }
+            50%     { transform: rotate(-14deg) translate(2vw, -3vh); }
+        }
+        @keyframes tilt-2 {
+            0%,100% { transform: rotate(14deg) translate(0,0); }
+            50%     { transform: rotate(10deg) translate(-2vw, 3vh); }
+        }
+        @keyframes tilt-3 {
+            0%,100% { transform: translate(0,0) scale(1); }
+            50%     { transform: translate(-2vw, 2vh) scale(1.1); }
         }
 
         /* Respect users who prefer no motion */
         @media (prefers-reduced-motion: reduce) {
-            .orb { animation: none !important; }
+            .glow, .light-streak, .glass-panel { animation: none !important; }
         }
 
-        /* Logo coloured to match the Sign In button gradient */
+        /* Logo: luminous lavender gradient for contrast on the dark scene */
         .brand-logo {
-            background: linear-gradient(135deg, #7b4f7a 0%, #542c55 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #ffd6fa 45%, #ebb6e7 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.01em;
-            filter: drop-shadow(0 1px 6px rgba(255, 214, 250, 0.35));
+            filter: drop-shadow(0 2px 14px rgba(235, 182, 231, 0.45));
         }
 
         .shimmer {
@@ -292,13 +331,17 @@
 <body class="bg-background text-on-surface min-h-screen flex flex-col">
 <!-- Background Layer -->
 <div class="fixed inset-0 -z-10 bg-smoke"></div>
-<!-- Animated 3D spheres -->
-<div class="orbs fixed inset-0 -z-10">
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3 hemi"></div>
-<div class="orb orb-4"></div>
-<div class="orb orb-5"></div>
+<!-- Premium animated scene: glows, glass panels, light streak, grain -->
+<div class="scene fixed inset-0 -z-10">
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+<div class="glow glow-c"></div>
+<div class="light-streak"></div>
+<div class="glass-panel panel-1"></div>
+<div class="glass-panel panel-2"></div>
+<div class="glass-panel panel-3"></div>
+<div class="focal"></div>
+<div class="grain"></div>
 </div>
 <!-- Contrast overlay -->
 <div class="fixed inset-0 -z-10 bg-overlay"></div>
