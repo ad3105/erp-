@@ -211,33 +211,59 @@
             animation: sweep 28s ease-in-out infinite;
         }
 
-        /* --- Frosted glass panels: refined geometric depth layers --- */
+        /* --- Floating glass planes: translucent architecture with metallic reflections --- */
         .glass-panel {
             position: absolute;
-            border-radius: 28px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(235,182,231,0.04) 45%, rgba(255,255,255,0.015));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid transparent;
-            border-image: linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,255,255,0.05)) 1;
-            box-shadow: 0 30px 80px rgba(20,6,22,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
+            border-image: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.04) 60%, rgba(255,214,250,0.30)) 1;
+            box-shadow: 0 40px 100px rgba(16,5,18,0.40), inset 0 1px 0 rgba(255,255,255,0.22);
+            overflow: hidden;
             will-change: transform;
         }
+        /* Metallic reflection sweep across each plane */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: -60%; left: -30%;
+            width: 60%; height: 220%;
+            background: linear-gradient(105deg, transparent, rgba(255,255,255,0.28) 45%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.28) 55%, transparent);
+            transform: rotate(18deg);
+            animation: reflect 9s ease-in-out infinite;
+        }
+        .glass-panel::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(160deg, rgba(255,214,250,0.10), transparent 40%, rgba(84,44,85,0.12));
+        }
+        /* Elongated floating planes, no spheres */
         .panel-1 {
-            width: 26vw; height: 34vw; top: 10vh; left: 6vw;
-            transform: rotate(-18deg);
-            animation: tilt-1 30s ease-in-out infinite;
+            width: 22vw; height: 40vw; top: 4vh; left: 4vw;
+            transform: rotate(-22deg);
+            animation: tilt-1 32s ease-in-out infinite;
         }
         .panel-2 {
-            width: 20vw; height: 26vw; bottom: 6vh; right: 8vw;
-            transform: rotate(14deg);
-            animation: tilt-2 36s ease-in-out infinite;
+            width: 17vw; height: 30vw; bottom: 2vh; right: 6vw;
+            transform: rotate(16deg);
+            animation: tilt-2 38s ease-in-out infinite;
         }
         .panel-3 {
-            width: 14vw; height: 14vw; top: 16vh; right: 22vw;
-            border-radius: 50%;
-            transform: rotate(0deg);
-            animation: tilt-3 26s ease-in-out infinite;
+            width: 13vw; height: 22vw; top: 12vh; right: 24vw;
+            transform: rotate(-10deg);
+            opacity: 0.7;
+            animation: tilt-3 28s ease-in-out infinite;
+        }
+        .panel-3::before { animation-delay: 3s; }
+        .panel-2::before { animation-delay: 1.5s; }
+
+        @keyframes reflect {
+            0%   { transform: translateX(0) rotate(18deg); opacity: 0; }
+            20%  { opacity: 1; }
+            60%  { transform: translateX(420%) rotate(18deg); opacity: 0; }
+            100% { transform: translateX(420%) rotate(18deg); opacity: 0; }
         }
 
         /* --- Fine grain for premium, band-free rendering --- */
