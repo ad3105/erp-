@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mini ERP Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Hanken+Grotesk:wght@600;700&amp;family=Geist:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#39323e",
+            "on-primary": "#521458",
+            "primary-container": "#9d599f",
+            "on-surface-variant": "#d2c2ce",
+            "secondary-fixed": "#f5d9fe",
+            "inverse-surface": "#eadfee",
+            "tertiary": "#d8bbf4",
+            "surface-container-lowest": "#110c16",
+            "surface-container": "#231d28",
+            "outline": "#9b8c98",
+            "background": "#16111c",
+            "outline-variant": "#4f434d",
+            "on-secondary-container": "#c6accf",
+            "error-container": "#93000a",
+            "surface-dim": "#16111c",
+            "surface-container-highest": "#39323e",
+            "tertiary-container": "#81689b",
+            "surface-bright": "#3d3742",
+            "on-tertiary": "#3c2654",
+            "tertiary-fixed-dim": "#d8bbf4",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#3c2945",
+            "on-tertiary-container": "#fff7ff",
+            "on-secondary-fixed": "#26142f",
+            "secondary": "#d8bde1",
+            "surface-container-high": "#2e2833",
+            "on-tertiary-fixed": "#26103e",
+            "primary": "#faacf9",
+            "surface-container-low": "#1f1924",
+            "error": "#ffb4ab",
+            "secondary-fixed-dim": "#d8bde1",
+            "on-background": "#eadfee",
+            "on-error": "#690005",
+            "on-primary-fixed": "#36003c",
+            "tertiary-fixed": "#efdbff",
+            "secondary-container": "#543f5d",
+            "surface": "#16111c",
+            "inverse-on-surface": "#342e39",
+            "primary-fixed-dim": "#faacf9",
+            "on-tertiary-fixed-variant": "#533d6c",
+            "on-secondary-fixed-variant": "#543f5d",
+            "on-primary-container": "#fff6fa",
+            "primary-fixed": "#ffd6fa",
+            "inverse-primary": "#87458a",
+            "surface-tint": "#faacf9",
+            "on-surface": "#eadfee",
+            "on-primary-fixed-variant": "#6c2d70"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "24px",
+            "margin-desktop": "40px",
+            "unit": "4px",
+            "margin-mobile": "16px",
+            "panel-padding": "32px"
+          },
+          "fontFamily": {
+            "display-lg": ["Hanken Grotesk"],
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-md": ["Inter"],
+            "mono-data": ["Geist"],
+            "label-sm": ["Geist"],
+            "headline-lg": ["Hanken Grotesk"]
+          },
+          "fontSize": {
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "mono-data": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #16111c;
+      overflow-x: hidden;
+    }
+    
+    .glass-panel {
+      background: rgba(35, 29, 40, 0.4);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.05);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(250, 172, 249, 0.3);
+    }
+
+    .status-glow-primary {
+      box-shadow: 0 0 15px rgba(250, 172, 249, 0.2);
+    }
+
+    .nav-interaction:active {
+      transform: scale(0.95);
+      transition-duration: 150ms;
+    }
+
+    .arrow-menu-gradient {
+      background: linear-gradient(135deg, #faacf9 0%, #87458a 100%);
+      clip-path: polygon(0% 20%, 100% 50%, 0% 80%, 20% 50%);
+    }
+
+    /* Custom scrollbar for glass aesthetic */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(250, 172, 249, 0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(250, 172, 249, 0.2); }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Atmospheric Background -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[120px] animate-pulse"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-tertiary/5 blur-[120px]"></div>
+
+</div>
+<!-- TopNavBar (Shared Component Logic) -->
+<header class="fixed top-0 left-0 w-full h-16 flex justify-between items-center px-margin-desktop bg-surface/30 backdrop-blur-[30px] border-b border-white/10 z-50">
+<div class="flex items-center gap-6">
+<button class="nav-interaction group relative w-12 h-8 flex items-center justify-center">
+<div class="arrow-menu-gradient w-10 h-10 group-hover:scale-110 transition-transform"></div>
+</button>
+</div>
+<div class="absolute left-1/2 -translate-x-1/2">
+<h1 class="font-display-lg text-primary text-headline-lg tracking-tight">Mini ERP</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-white/5 rounded-full transition-colors nav-interaction">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-white/5 rounded-full transition-colors nav-interaction">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 w-10 h-10 rounded-full border border-primary/30 overflow-hidden cursor-pointer hover:ring-2 ring-primary/20 transition-all">
+<img class="w-full h-full object-cover" data-alt="A professional high-end business portrait of a modern executive with stylish glasses and a tailored suit, set against a dark, blurred tech office background with soft purple ambient lighting that matches the Mini ERP corporate identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4cgawVVqGZTXAa2HszADsH6jwKZX7qCYa5fs0vl3hc0UGVnZunQnLkuNC5x6jqO4Gl_IsH5PLc8IdZTCFzMm_cABXabwm2WJnsvWk9itG4Khv1jHoIcdYemHgCElnGn3ujszJJo68x_nfiG_RaJqnLb5I0xctRTIvzkwFYqA7O5Lfly4ogniAmbJBEjj4n0_cSDGVhHEY5u5KVWsjL3prG8DP_2bxq0LDwNODsJ9bcZdf0YAB2NWrsdCvz0ZqPpunYR5RsiMbt8CG"/>
+</div>
+</div>
+</header>
+<!-- Main Dashboard Content -->
+<main class="pt-24 pb-12 px-margin-desktop max-w-[1600px] mx-auto min-h-screen">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter h-full">
+<!-- Column 1: Sale Orders -->
+<section class="glass-panel rounded-xl p-6 flex flex-col gap-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg">Sale Orders</h2>
+</div>
+<div class="space-y-6">
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">All Orders</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-primary">2</p>
+<p class="font-label-sm text-on-surface-variant">Draft</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">7</p>
+<p class="font-label-sm text-on-surface-variant">Confirmed</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">1</p>
+<p class="font-label-sm text-on-surface-variant text-[10px]">Partially Delivered</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-primary">11</p>
+<p class="font-label-sm text-on-surface-variant">Delivered</p>
+</div>
+</div>
+<div class="mt-4 p-5 rounded-xl glass-card border-error/20 flex justify-between items-center bg-error/5">
+<div>
+<p class="font-display-lg text-headline-lg text-error mb-1">11</p>
+<p class="font-label-sm text-error/80 uppercase">Late Orders</p>
+</div>
+<span class="material-symbols-outlined text-error text-3xl">priority_high</span>
+</div>
+</div>
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">Assigned to Me</p>
+<div class="space-y-2">
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Confirmed</span>
+<span class="font-mono-data font-bold text-primary">7</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Draft</span>
+<span class="font-mono-data font-bold text-primary">1</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg border-error/10">
+<span class="font-body-md text-error">Late</span>
+<span class="font-mono-data font-bold text-error">5</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Column 2: Purchase Orders -->
+<section class="glass-panel rounded-xl p-6 flex flex-col gap-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/20">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg">Purchase Orders</h2>
+</div>
+<div class="space-y-6">
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">All Purchases</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-tertiary">2</p>
+<p class="font-label-sm text-on-surface-variant">Draft</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">7</p>
+<p class="font-label-sm text-on-surface-variant">Confirmed</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-tertiary">11</p>
+<p class="font-label-sm text-on-surface-variant">Received</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">1</p>
+<p class="font-label-sm text-on-surface-variant text-[10px]">Partially Received</p>
+</div>
+</div>
+<div class="mt-4 p-5 rounded-xl glass-card border-tertiary/20 flex justify-between items-center bg-tertiary/5">
+<div>
+<p class="font-display-lg text-headline-lg text-tertiary mb-1">11</p>
+<p class="font-label-sm text-tertiary/80 uppercase">Late Arrivals</p>
+</div>
+<span class="material-symbols-outlined text-tertiary text-3xl">schedule</span>
+</div>
+</div>
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">My Items</p>
+<div class="space-y-2">
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Confirmed</span>
+<span class="font-mono-data font-bold text-tertiary">7</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Draft</span>
+<span class="font-mono-data font-bold text-tertiary">1</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Received</span>
+<span class="font-mono-data font-bold text-tertiary">5</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Column 3: Manufacturing -->
+<section class="glass-panel rounded-xl p-6 flex flex-col gap-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
+<span class="material-symbols-outlined">factory</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg">Manufacturing</h2>
+</div>
+<div class="space-y-6">
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">Production Floor</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-secondary">2</p>
+<p class="font-label-sm text-on-surface-variant">Draft</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">7</p>
+<p class="font-label-sm text-on-surface-variant">Confirmed</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-on-surface">1</p>
+<p class="font-label-sm text-on-surface-variant">In-Progress</p>
+</div>
+<div class="glass-card p-5 rounded-xl text-center">
+<p class="font-display-lg text-headline-lg mb-1 text-secondary">5</p>
+<p class="font-label-sm text-on-surface-variant">To Close</p>
+</div>
+</div>
+<div class="mt-4 p-5 rounded-xl glass-card border-primary/20 flex justify-between items-center bg-primary/5">
+<div>
+<p class="font-display-lg text-headline-lg text-primary mb-1">11</p>
+<p class="font-label-sm text-primary/80 uppercase">Completed Orders</p>
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">task_alt</span>
+</div>
+</div>
+<div>
+<p class="font-label-sm text-outline uppercase tracking-widest mb-4">My Tasks</p>
+<div class="space-y-2">
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Confirmed</span>
+<span class="font-mono-data font-bold text-secondary">7</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">To Close</span>
+<span class="font-mono-data font-bold text-secondary">5</span>
+</div>
+<div class="flex justify-between items-center px-4 py-3 glass-card rounded-lg">
+<span class="font-body-md">Done</span>
+<span class="font-mono-data font-bold text-secondary">11</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Side Navigation Overlay (Hidden by default, triggered by Arrow) -->
+<aside class="fixed inset-y-0 left-0 w-80 bg-surface-container/90 backdrop-blur-3xl border-r border-white/10 z-[60] -translate-x-full transition-transform duration-500 ease-in-out shadow-2xl" id="side-nav">
+<div class="p-8 h-full flex flex-col">
+<div class="flex items-center justify-between mb-12">
+<h3 class="font-display-lg text-headline-lg text-primary">Mini ERP</h3>
+<button class="text-on-surface-variant hover:text-on-surface" onclick="toggleNav()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<nav class="space-y-2 flex-grow">
+<a class="flex items-center gap-4 px-6 py-4 rounded-xl text-primary bg-primary/10 border border-primary/20 transition-all font-bold" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+<a class="flex items-center gap-4 px-6 py-4 rounded-xl text-outline hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">shopping_cart</span> Sales
+        </a>
+<a class="flex items-center gap-4 px-6 py-4 rounded-xl text-outline hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">inventory</span> Purchase
+        </a>
+<a class="flex items-center gap-4 px-6 py-4 rounded-xl text-outline hover:text-on-surface hover:bg-white/5 transition-all" href="#">
+<span class="material-symbols-outlined">factory</span> Manufacturing
+        </a>
+</nav>
+<div class="pt-8 border-t border-white/5 space-y-2">
+<a class="flex items-center gap-4 px-6 py-3 text-outline hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined">help</span> Help Center
+        </a>
+<a class="flex items-center gap-4 px-6 py-3 text-error/80 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span> Sign Out
+        </a>
+</div>
+</div>
+</aside>
+<!-- Interaction Script -->
+<script>
+    const sideNav = document.getElementById('side-nav');
+    const menuTrigger = document.querySelector('.nav-interaction');
+    
+    function toggleNav() {
+      sideNav.classList.toggle('-translate-x-full');
+    }
+    
+    menuTrigger.addEventListener('click', toggleNav);
+
+    // Micro-interaction for cards
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  </script>
+</body></html>
