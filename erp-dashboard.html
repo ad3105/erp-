@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Mini ERP · Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Outfit:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          // Odoo brand palette
+          "odoo-purple": "#875A7B",
+          "odoo-purple-deep": "#714B67",
+          "odoo-purple-light": "#b18bab",
+          "odoo-teal": "#00A09D",
+          "odoo-teal-light": "#5bc4c1",
+          "odoo-amber": "#f0ad4e",
+          "odoo-red": "#e4636b",
+          "ink": "#1b1422",
+          "ink-2": "#241a2e",
+        },
+        fontFamily: {
+          display: ["Outfit", "sans-serif"],
+          body: ["Inter", "sans-serif"],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html, body { height: 100%; }
+  body {
+    background-color: #16101d;
+    overflow: hidden;
+    font-family: "Inter", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  /* Frosted glass surfaces */
+  .glass-panel {
+    background: linear-gradient(155deg, rgba(135,90,123,0.10), rgba(36,26,46,0.55));
+    backdrop-filter: blur(26px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.06), 0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .glass-card:hover {
+    background: rgba(135,90,123,0.16);
+    border-color: rgba(177,139,171,0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -14px rgba(135,90,123,0.6);
+  }
+
+  /* Swipe track */
+  #track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform .55s cubic-bezier(.22,.61,.36,1);
+    will-change: transform;
+  }
+  .slide {
+    min-width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 8px 4px 96px;
+  }
+  .slide::-webkit-scrollbar { display: none; }
+
+  /* Dots */
+  .dot { transition: all .4s cubic-bezier(.22,.61,.36,1); }
+
+  /* Side menu */
+  #menu-panel { transition: transform .45s cubic-bezier(.22,.61,.36,1); }
+  #menu-overlay { transition: opacity .4s ease; }
+
+  .arrow-logo {
+    background: linear-gradient(135deg, #b18bab 0%, #714B67 100%);
+    clip-path: polygon(0% 18%, 100% 50%, 0% 82%, 22% 50%);
+  }
+
+  @keyframes floaty { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-14px) } }
+  .orb { animation: floaty 9s ease-in-out infinite; }
+
+  .nav-btn:active { transform: scale(.92); }
+  .menu-item { transition: background .2s ease, color .2s ease, padding-left .2s ease; }
+  .menu-item:hover { padding-left: 28px; }
+</style>
+</head>
+<body class="text-white/90 font-body select-none">
+
+<!-- Ambient background -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+  <div class="orb absolute -top-32 -left-24 w-[55vw] h-[55vw] rounded-full bg-odoo-purple/25 blur-[120px]"></div>
+  <div class="orb absolute -bottom-40 -right-24 w-[50vw] h-[50vw] rounded-full bg-odoo-teal/15 blur-[130px]" style="animation-delay:-3s"></div>
+  <div class="absolute inset-0 bg-[#16101d]/40"></div>
+</div>
+
+<!-- Top Nav -->
+<header class="fixed top-0 inset-x-0 h-16 z-40 flex items-center justify-between px-4 sm:px-6
+               bg-[#1b1422]/55 backdrop-blur-2xl border-b border-white/10">
+  <button id="menu-open" class="nav-btn w-11 h-11 rounded-xl flex items-center justify-center
+          text-white/80 hover:bg-white/10 transition-colors" aria-label="Master Menu">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <div class="flex items-center gap-2.5">
+    <div class="arrow-logo w-7 h-7"></div>
+    <h1 class="font-display font-700 text-lg sm:text-xl tracking-tight">
+      <span class="text-odoo-purple-light">Mini</span> ERP
+    </h1>
+  </div>
+
+  <div class="flex items-center gap-1.5">
+    <button class="nav-btn w-10 h-10 rounded-full hidden sm:flex items-center justify-center text-white/70 hover:bg-white/10 transition-colors">
+      <span class="material-symbols-outlined text-[22px]">notifications</span>
+    </button>
+    <button class="nav-btn w-10 h-10 rounded-full hidden sm:flex items-center justify-center text-white/70 hover:bg-white/10 transition-colors">
+      <span class="material-symbols-outlined text-[22px]">settings</span>
+    </button>
+    <button class="ml-1 w-10 h-10 rounded-full overflow-hidden ring-2 ring-odoo-purple/40 hover:ring-odoo-purple transition-all">
+      <img class="w-full h-full object-cover"
+           src="https://i.pravatar.cc/100?img=12" alt="User avatar"/>
+    </button>
+  </div>
+</header>
+
+<!-- Swipe stage -->
+<main class="fixed inset-0 pt-16 pb-0">
+  <div class="relative h-full max-w-[680px] mx-auto px-3 sm:px-4 overflow-hidden">
+
+    <div id="track">
+      <!-- ============ SLIDE 1 · SALE ORDERS ============ -->
+      <section class="slide" data-name="sale">
+        <div class="glass-panel rounded-3xl p-5 sm:p-7 mt-2">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-odoo-purple/20 border border-odoo-purple/30 flex items-center justify-center text-odoo-purple-light">
+              <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+            <div>
+              <h2 class="font-display font-700 text-2xl">Sale Orders</h2>
+              <p class="text-xs text-white/40">Customer-facing pipeline</p>
+            </div>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mb-3">ALL ORDERS</p>
+          <div class="grid grid-cols-2 gap-3">
+            <!-- stat -->
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-purple-light">2</p>
+              <p class="text-xs text-white/55 mt-1">Draft</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl">7</p>
+              <p class="text-xs text-white/55 mt-1">Confirmed</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-amber">1</p>
+              <p class="text-xs text-white/55 mt-1">Partially Delivered</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-teal-light">11</p>
+              <p class="text-xs text-white/55 mt-1">Delivered</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 mt-3 flex items-center justify-between bg-odoo-red/10 border-odoo-red/25">
+            <div>
+              <p class="font-display font-700 text-3xl text-odoo-red">11</p>
+              <p class="text-xs text-odoo-red/80 mt-1 tracking-wide uppercase">Late Orders</p>
+            </div>
+            <span class="material-symbols-outlined text-odoo-red text-3xl">priority_high</span>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mt-7 mb-3">ASSIGNED TO ME</p>
+          <div class="space-y-2">
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Confirmed</span><span class="font-display font-700 text-odoo-purple-light">7</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Draft</span><span class="font-display font-700 text-odoo-purple-light">1</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm text-odoo-red">Late</span><span class="font-display font-700 text-odoo-red">5</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 2 · PURCHASE ORDERS ============ -->
+      <section class="slide" data-name="purchase">
+        <div class="glass-panel rounded-3xl p-5 sm:p-7 mt-2">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-odoo-teal/20 border border-odoo-teal/30 flex items-center justify-center text-odoo-teal-light">
+              <span class="material-symbols-outlined">inventory_2</span>
+            </div>
+            <div>
+              <h2 class="font-display font-700 text-2xl">Purchase Orders</h2>
+              <p class="text-xs text-white/40">Vendor &amp; procurement</p>
+            </div>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mb-3">ALL PURCHASES</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-teal-light">2</p>
+              <p class="text-xs text-white/55 mt-1">Draft</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl">7</p>
+              <p class="text-xs text-white/55 mt-1">Confirmed</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-amber">1</p>
+              <p class="text-xs text-white/55 mt-1">Partially Received</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-teal-light">11</p>
+              <p class="text-xs text-white/55 mt-1">Received</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 mt-3 flex items-center justify-between bg-odoo-amber/10 border-odoo-amber/25">
+            <div>
+              <p class="font-display font-700 text-3xl text-odoo-amber">11</p>
+              <p class="text-xs text-odoo-amber/80 mt-1 tracking-wide uppercase">Late Arrivals</p>
+            </div>
+            <span class="material-symbols-outlined text-odoo-amber text-3xl">schedule</span>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mt-7 mb-3">MY ITEMS</p>
+          <div class="space-y-2">
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Confirmed</span><span class="font-display font-700 text-odoo-teal-light">7</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Draft</span><span class="font-display font-700 text-odoo-teal-light">1</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Received</span><span class="font-display font-700 text-odoo-teal-light">5</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SLIDE 3 · MANUFACTURING ORDERS ============ -->
+      <section class="slide" data-name="manufacturing">
+        <div class="glass-panel rounded-3xl p-5 sm:p-7 mt-2">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-odoo-purple/20 border border-odoo-purple/30 flex items-center justify-center text-odoo-purple-light">
+              <span class="material-symbols-outlined">precision_manufacturing</span>
+            </div>
+            <div>
+              <h2 class="font-display font-700 text-2xl">Manufacturing Orders</h2>
+              <p class="text-xs text-white/40">Production floor</p>
+            </div>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mb-3">ALL ORDERS</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-purple-light">2</p>
+              <p class="text-xs text-white/55 mt-1">Draft</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl">7</p>
+              <p class="text-xs text-white/55 mt-1">Confirmed</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-amber">1</p>
+              <p class="text-xs text-white/55 mt-1">In-Progress</p>
+            </div>
+            <div class="glass-card rounded-2xl p-4">
+              <p class="font-display font-700 text-3xl text-odoo-purple-light">5</p>
+              <p class="text-xs text-white/55 mt-1">To Close</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 mt-3 flex items-center justify-between bg-odoo-teal/10 border-odoo-teal/25">
+            <div>
+              <p class="font-display font-700 text-3xl text-odoo-teal-light">11</p>
+              <p class="text-xs text-odoo-teal-light/80 mt-1 tracking-wide uppercase">Completed (Done)</p>
+            </div>
+            <span class="material-symbols-outlined text-odoo-teal-light text-3xl">task_alt</span>
+          </div>
+
+          <p class="text-[11px] font-600 tracking-[0.18em] text-white/40 mt-7 mb-3">MY TASKS</p>
+          <div class="space-y-2">
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Confirmed</span><span class="font-display font-700 text-odoo-purple-light">7</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">In-Progress</span><span class="font-display font-700 text-odoo-amber">1</span>
+            </div>
+            <div class="glass-card rounded-xl px-4 py-3 flex items-center justify-between">
+              <span class="text-sm">Done</span><span class="font-display font-700 text-odoo-teal-light">5</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Prev / Next arrows (desktop) -->
+    <button id="prev" class="nav-btn hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -ml-2 w-10 h-10 rounded-full
+            glass-panel items-center justify-center text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-20">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button id="next" class="nav-btn hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 -mr-2 w-10 h-10 rounded-full
+            glass-panel items-center justify-center text-white/70 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed z-20">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</main>
+
+<!-- Bottom pager -->
+<div class="fixed bottom-5 inset-x-0 z-30 flex flex-col items-center gap-2 pointer-events-none">
+  <p id="pager-label" class="text-xs text-white/50 font-500">Swipe to switch · Sale Orders</p>
+  <div class="flex items-center gap-2">
+    <span class="dot h-2 rounded-full bg-odoo-purple w-7" data-i="0"></span>
+    <span class="dot h-2 w-2 rounded-full bg-white/25" data-i="1"></span>
+    <span class="dot h-2 w-2 rounded-full bg-white/25" data-i="2"></span>
+  </div>
+</div>
+
+<!-- ============ MASTER MENU ============ -->
+<div id="menu-overlay" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none"></div>
+<aside id="menu-panel"
+       class="fixed top-0 left-0 z-[60] h-full w-[82%] max-w-[330px] -translate-x-full
+              bg-[#1b1422]/95 backdrop-blur-2xl border-r border-white/10 shadow-2xl flex flex-col">
+  <div class="flex items-center justify-between px-6 h-16 border-b border-white/10">
+    <div class="flex items-center gap-2.5">
+      <div class="arrow-logo w-6 h-6"></div>
+      <h3 class="font-display font-700 text-lg">Master Menu</h3>
+    </div>
+    <button id="menu-close" class="nav-btn w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:bg-white/10">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <nav class="flex-1 overflow-y-auto py-4">
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/85 hover:bg-odoo-purple/15 hover:text-white cursor-pointer" data-go="0">
+      <span class="material-symbols-outlined text-odoo-purple-light">shopping_cart</span> Sale Orders
+    </a>
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/85 hover:bg-odoo-purple/15 hover:text-white cursor-pointer" data-go="1">
+      <span class="material-symbols-outlined text-odoo-teal-light">inventory_2</span> Purchase Orders
+    </a>
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/85 hover:bg-odoo-purple/15 hover:text-white cursor-pointer" data-go="2">
+      <span class="material-symbols-outlined text-odoo-purple-light">precision_manufacturing</span> Manufacturing Orders
+    </a>
+    <div class="my-2 mx-6 border-t border-white/10"></div>
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/75 hover:bg-white/5 hover:text-white cursor-pointer">
+      <span class="material-symbols-outlined">receipt_long</span> Bills of Materials
+    </a>
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/75 hover:bg-white/5 hover:text-white cursor-pointer">
+      <span class="material-symbols-outlined">category</span> Products
+    </a>
+    <a class="menu-item flex items-center gap-4 px-6 py-4 text-white/75 hover:bg-white/5 hover:text-white cursor-pointer">
+      <span class="material-symbols-outlined">history</span> Audit Logs
+    </a>
+  </nav>
+
+  <div class="px-6 py-4 border-t border-white/10 text-xs text-white/40">
+    Mini ERP · Odoo x KAHE Hackathon '26
+  </div>
+</aside>
+
+<script>
+  /* ---------- Swipe carousel ---------- */
+  const track   = document.getElementById('track');
+  const stage   = track.parentElement;
+  const slides  = [...document.querySelectorAll('.slide')];
+  const dots    = [...document.querySelectorAll('.dot')];
+  const labelEl = document.getElementById('pager-label');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const names   = ['Sale Orders', 'Purchase Orders', 'Manufacturing Orders'];
+  const total   = slides.length;
+  let current   = 0;
+
+  function render() {
+    track.style.transition = 'transform .55s cubic-bezier(.22,.61,.36,1)';
+    track.style.transform  = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => {
+      const active = i === current;
+      d.classList.toggle('w-7', active);
+      d.classList.toggle('bg-odoo-purple', active);
+      d.classList.toggle('w-2', !active);
+      d.classList.toggle('bg-white/25', !active);
+    });
+    labelEl.textContent = 'Swipe to switch · ' + names[current];
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+  }
+
+  function goTo(i) {
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft')  goTo(current - 1);
+  });
+
+  /* ---------- Drag / swipe (touch + mouse) ---------- */
+  let dragging = false, startX = 0, dx = 0, startY = 0, lockedAxis = null;
+
+  function down(x, y) {
+    dragging = true; startX = x; startY = y; dx = 0; lockedAxis = null;
+    track.style.transition = 'none';
+  }
+  function move(x, y) {
+    if (!dragging) return;
+    dx = x - startX;
+    if (lockedAxis === null) {
+      lockedAxis = Math.abs(dx) > Math.abs(y - startY) ? 'x' : 'y';
+    }
+    if (lockedAxis !== 'x') return;
+    const w = stage.clientWidth;
+    let offset = -current * w + dx;
+    // rubber-band at the edges
+    if ((current === 0 && dx > 0) || (current === total - 1 && dx < 0)) {
+      offset = -current * w + dx * 0.32;
+    }
+    track.style.transform = `translateX(${offset}px)`;
+  }
+  function up() {
+    if (!dragging) return;
+    dragging = false;
+    if (lockedAxis === 'x') {
+      const threshold = stage.clientWidth * 0.18;
+      if (dx < -threshold && current < total - 1) current++;
+      else if (dx > threshold && current > 0) current--;
+    }
+    render();
+  }
+
+  // Touch
+  track.addEventListener('touchstart', e => down(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  track.addEventListener('touchmove',  e => move(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  track.addEventListener('touchend',   up);
+  // Mouse (desktop demo)
+  track.addEventListener('mousedown', e => { down(e.clientX, e.clientY); });
+  window.addEventListener('mousemove', e => { if (dragging) move(e.clientX, e.clientY); });
+  window.addEventListener('mouseup', up);
+
+  window.addEventListener('resize', render);
+
+  /* ---------- Master menu ---------- */
+  const overlay = document.getElementById('menu-overlay');
+  const panel   = document.getElementById('menu-panel');
+  function openMenu() {
+    panel.style.transform = 'translateX(0)';
+    overlay.style.opacity = '1';
+    overlay.classList.remove('pointer-events-none');
+  }
+  function closeMenu() {
+    panel.style.transform = 'translateX(-100%)';
+    overlay.style.opacity = '0';
+    overlay.classList.add('pointer-events-none');
+  }
+  document.getElementById('menu-open').addEventListener('click', openMenu);
+  document.getElementById('menu-close').addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  document.querySelectorAll('.menu-item[data-go]').forEach(el => {
+    el.addEventListener('click', () => { goTo(+el.dataset.go); closeMenu(); });
+  });
+
+  render();
+</script>
+</body>
+</html>
